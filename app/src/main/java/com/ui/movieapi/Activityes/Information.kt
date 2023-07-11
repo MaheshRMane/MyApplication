@@ -1,5 +1,6 @@
 package com.ui.movieapi.Activityes
 
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
@@ -14,11 +15,13 @@ class Information : AppCompatActivity() {
 
     private lateinit var binding: ActivityInformaitionBinding
     private lateinit var viewModel : MainViewModel
+    private lateinit var progressBar : Dialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityInformaitionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        showProgressBar()
         getMovieData()
     }
 
@@ -28,6 +31,7 @@ class Information : AppCompatActivity() {
 
         viewModel.infoViewModel().observe(this, object : Observer<MovieInfo?> {
             override fun onChanged(value: MovieInfo?) {
+                cancelProgressBar()
                 try {
 
                     Glide.with(this@Information).load(value?.Poster).into(binding.ivImage)
@@ -45,6 +49,15 @@ class Information : AppCompatActivity() {
             }
         })
 
+    }
+    private fun showProgressBar(){
+
+        progressBar = Dialog(this)
+        progressBar.setContentView(R.layout.progress)
+        progressBar.show()
+    }
+    private fun cancelProgressBar(){
+        progressBar.dismiss()
     }
 
 }

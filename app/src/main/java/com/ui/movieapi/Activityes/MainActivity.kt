@@ -1,5 +1,6 @@
 package com.ui.movieapi.Activityes
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ui.movieapi.Adapter.MovieAdapter
 import com.ui.movieapi.Model.Episode
 import com.ui.movieapi.Model.ResponseData
+import com.ui.movieapi.R
 import com.ui.movieapi.ViewModel.MainViewModel
 import com.ui.movieapi.databinding.ActivityMain4Binding
 
@@ -16,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMain4Binding
     private lateinit var viewModel: MainViewModel
+    private lateinit var progressBar : Dialog
     private var data: List<Episode>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,6 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        showProgressBar()
         getData()
 
     }
@@ -34,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.movieViewModel().observe(this, object : Observer<ResponseData?> {
             override fun onChanged(value: ResponseData?) {
-
+                cancelProgressBar()
                 try {
                     binding.tvTitle.text = value?.Title
                     binding.tvSeason.text = value?.Season
@@ -55,5 +59,15 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun showProgressBar(){
+
+        progressBar = Dialog(this)
+        progressBar.setContentView(R.layout.progress)
+        progressBar.show()
+    }
+    private fun cancelProgressBar(){
+        progressBar.dismiss()
     }
 }
